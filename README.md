@@ -87,4 +87,5 @@ The game's own source code currently has no license (all rights reserved) unless
 | [`docs/DATA-PIPELINE.md`](docs/DATA-PIPELINE.md) | Curriculum authoring, dataset conversion, licences |
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Vercel and GitHub Pages deployment |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log from the design interview |
+| [`docs/SESSION-2026-10-21.md`](docs/SESSION-2026-10-21.md) | Session handoff: work completed, checkpoint items, next steps |
 | [`AGENTS.md`](AGENTS.md) | Project conventions for contributors and coding agents |
