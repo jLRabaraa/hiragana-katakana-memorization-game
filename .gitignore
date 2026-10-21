@@ -1,0 +1,10 @@
+# Unrelated local workspaces
+.opencode/
+gmail-agent/
+
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.log
