@@ -2,9 +2,28 @@
 .opencode/
 gmail-agent/
 
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+
+# Dataset inputs (large raw dumps; converted slices are committed under data/generated/)
+data/raw/
+
+# Deployment
+.vercel/
+
+# Test / coverage artifacts
+coverage/
+
 # OS and editor clutter
 .DS_Store
 Thumbs.db
 desktop.ini
 *.swp
 *.log
+.env
+.env.*
+!.env.example
