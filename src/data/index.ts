@@ -19,6 +19,8 @@ export const ALL_ITEMS: Item[] = [...KANA_ITEMS, ...VOCAB_ITEMS]
 
 export const ITEM_BY_ID = new Map<string, Item>(ALL_ITEMS.map((item) => [item.id, item]))
 
+export const LEVEL_BY_ID = new Map<string, Level>(LEVELS.map((level) => [level.id, level]))
+
 export const KANJI_BY_LITERAL = new Map(GENERATED_KANJI.map((entry) => [entry.literal, entry]))
 
 export function getItem(id: string): Item {

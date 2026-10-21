@@ -1,7 +1,9 @@
 # Architecture
 
-Status: **Phase 2 — curriculum authored**. This document describes the target design; sections that
-are not built yet are marked _(planned)_. It is the reference for implementing Phases 3–4.
+Status: **Phase 3 — campaign engines and screens built.** The progress store, question builder,
+spiral review, lesson phase, the five quiz engines, and the map → lesson → quiz → results flow are
+implemented; the free-practice Dojo and final polish are Phase 4. Sections that are still only
+target design are marked _(planned)_.
 
 ## 1. Goals and non-goals
 
@@ -44,13 +46,13 @@ then.
 │   └── kana-dojo-legacy.html  # Original single-file game, kept as a working reference
 ├── public/                    # Static files copied to the build
 ├── scripts/
-│   └── convert-datasets.ts    # Dataset enrichment (planned, Phase 2)
+│   └── convert-datasets.ts    # Dataset enrichment
 ├── src/
-│   ├── app/App.tsx            # Application shell and screen switch (Phase 4)
+│   ├── app/App.tsx            # Application shell and screen switch
 │   ├── components/            # Shared UI (buttons, cards, attribution footer)
 │   ├── data/
 │   │   ├── curated/           # Hand-authored levels, items, mnemonics, sentences
-│   │   └── generated/         # Enriched output committed for the slice (Phase 2)
+│   │   └── generated/         # Enriched output committed for the slice
 │   ├── engine/                # Pure logic: question builder, spiral weights, gating
 │   ├── features/
 │   │   ├── home/              # Level map

@@ -4,11 +4,12 @@ Kana Dōjō is a level-based Japanese learning game: React + TypeScript + Vite, 
 backend. A complete beginner starts with hiragana and progresses through katakana, vocabulary
 (kanji taught inside words), and first sentence structure. Progress is stored in `localStorage`.
 
-**Current phase: 2 — curriculum authored (Checkpoint 1 awaiting review).** The campaign data lives
-in `src/data/curated/` (hand-authored) and `src/data/generated/` (enrichment output). In development,
-the home screen links to a read-only curriculum-review page; it is excluded from production builds.
-Engines and campaign screens are built in Phases 3–4. The original single-file game is preserved at
-`legacy/kana-dojo-legacy.html` as a working reference.
+**Current phase: 3 — engines and campaign screens built (grammar Checkpoint 2 pending review).**
+The campaign data lives in `src/data/curated/` (hand-authored) and `src/data/generated/` (enrichment
+output). In development, the home screen links to a read-only curriculum-review page; it is excluded
+from production builds. The flow home map → lesson → quiz → results is playable end to end;
+retry beats, best-score persistence, and mobile polish need a final pass in Phase 4. The original
+single-file game is preserved at `legacy/kana-dojo-legacy.html` as a working reference.
 
 ## Commands
 

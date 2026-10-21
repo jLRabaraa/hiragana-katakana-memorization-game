@@ -12,10 +12,11 @@ spiral review, and three additional grammar exercise engines.
 
 ## Project status
 
-**Phase 2 of 4 — curriculum authored, awaiting Checkpoint 1 review.** The Vite + React +
-TypeScript foundation is in place, the original design system has been ported to
-`src/styles/global.css`, and the full kana curriculum plus the first vocabulary and grammar blocks
-are generated. The dev build includes a curriculum-review screen for sign-off.
+**Phase 3 of 4 — campaign engines and screens built.** The progress store, question builder with
+spiral review, lesson phase, five quiz engines (choice, typing, drag-match, particle fill, word
+order), and the full level map → lesson → quiz → results flow are playable end to end. The dev
+build still includes the curriculum-review screen; grammar content awaits Checkpoint 2 review. The
+free-practice Dojo and final polish land in Phase 4.
 
 ## Quick start
 
@@ -62,9 +63,9 @@ The full mechanics, schemas, and engine design are in
 | Phase | Scope |
 | --- | --- |
 | **1 — Scaffold** ✅ | Vite + React + TS, design system migration, docs, Vercel config |
-| **2 — Content pipeline** 🟡 | Curated curriculum, enrichment script, attribution, content review checkpoint |
-| **3 — Engines** | Progress store, question builder, lesson phase, five quiz engines, grammar review checkpoint |
-| **4 — Vertical slice** | Level map, end-to-end flow, on-miss mnemonics, free-practice Dojo, polish |
+| **2 — Content pipeline** ✅ | Curated curriculum, enrichment script, attribution, content review checkpoint |
+| **3 — Engines** 🟡 | Progress store, question builder, lesson phase, five quiz engines, grammar review checkpoint |
+| **4 — Vertical slice** | On-miss mnemonics, free-practice Dojo, mobile/pointer polish, deployment |
 
 The vertical slice covers full kana (hiragana then katakana by gojūon row), a first
 kanji-in-vocabulary block, and one grammar level combining particle fill-in with word-order
