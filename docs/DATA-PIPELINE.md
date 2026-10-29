@@ -1,7 +1,9 @@
 # Content Pipeline
 
-Status: **planned for Phase 2**. This document defines how learning content is authored, enriched,
-reviewed, and licensed. It is written before the code so the review checkpoint has clear rules.
+Status: **curated curriculum and conversion script exist; beginner pilot content is planned**.
+Committed generated files currently mirror curated vocabulary and contain empty kanji metadata.
+The next content task is the teaching sequence and first word in
+[BEGINNER-PILOT.md](BEGINNER-PILOT.md), followed by review before playable integration.
 
 ## 1. Principle: the curriculum is hand-curated, datasets only enrich it
 
@@ -52,14 +54,13 @@ The full Tatoeba dump is multi-gigabyte; export only Japanese and English rows w
 ```
 src/data/curated/
 ├── levels.ts        # ordered Level definitions: ids, titles, requires, pools, passAccuracy
-├── kana.ts          # 46 basic hiragana (katakana generated), mnemonics (on-miss)
-├── vocab.ts         # ~60 words for the slice: kanji, kana, chosen gloss, overrides
-├── grammar.ts       # 8 sentences: tokens, blanks, canonical order, translation
-└── mnemonics.ts     # kana + kanji anchors for wrong-answer feedback
+├── kana.ts          # 46 basic + 25 voiced + 33 combination forms, both scripts = 208 items
+├── vocab.ts         # 14 words: kanji, kana, chosen gloss, examples, mnemonics
+└── grammar.ts       # 12 questions: 8 particle fills + 4 assemblies, plus lesson notes
 ```
 
-> Current slice: `vocab.ts` has 14 words and `grammar.ts` has 12 questions (8 particle-fill + 4
-> assembly). Mnemonics live beside their items rather than in a separate file.
+Mnemonics live beside their items. Create a pilot sequence definition when implementation needs
+it; do not reinterpret the existing ten-kana first level as the five-kana pilot.
 
 ### Curation rules
 
@@ -67,15 +68,22 @@ src/data/curated/
   Rōmaji is Hepburn with Kunrei alternates where the legacy game accepted them (`し` → `si`, etc.).
 - **Vocab**: every entry has `kana`, an optional `kanji` written form, one short `gloss`, and a
   hand-picked example. Prefer concrete nouns/verbs a beginner meets in N5 materials.
+- **Early words**: introduce a word during the first session using only kana already taught.
+  The pilot proposes いえ (house) after い and え. Keep its presentation in kana; reusing a later
+  vocabulary entry must not reveal its kanji or complete that entry's campaign level.
+- **Guided teaching**: introduce one or two kana at a time, explain unfamiliar terms and controls,
+  and author assisted practice, unaided recall, and corrective feedback together. Distractors
+  must use taught material; fewer options are preferable to exposing an untaught item.
 - **Kanji through words only**: no isolated kanji items. A kanji appears inside at least one taught
   word before it is ever drilled.
 - **Grammar**: sentences use only taught vocabulary and the particles は, を, に, で, も plus the
   verbs 飲む, 食べる, 見る, 行く, です. If a sentence needs an untaught word, that word joins the
-  curriculum first.
+  curriculum first. Verb forms used in drills must also have been explained. Existing use of 私
+  and the transition to polite verb forms remain review issues for the later grammar work.
 - **Mnemonics**: short, concrete, and English; one per item; shown only on miss or failed-level
   retry. Never block a lesson on a mnemonic.
 
-## 4. Conversion script contract (Phase 2)
+## 4. Conversion script and target contract
 
 `scripts/convert-datasets.ts`, run with Node's native TypeScript support (Node 22.18+):
 
@@ -83,7 +91,13 @@ src/data/curated/
 npm run data:convert     # validates curated data, enriches if raw inputs exist, writes generated files
 ```
 
-Responsibilities:
+The current script validates vocabulary IDs and fields, supports optional dictionary inputs, and
+writes generated vocabulary and kanji files. Full reference validation, sense selection, and
+reading/POS enrichment below remain target behavior. Tatoeba matching currently uses a 24-character
+limit and can replace curated examples; preserving manual overrides needs correction before that
+path is relied on. Dataset expansion is not a dependency of the beginner pilot.
+
+Target responsibilities:
 
 1. **Load curated files** and validate ids are unique and referenced ids exist.
 2. **Enrich vocab** from JMdict: match by `kanji` (or `kana`), choose the curated sense index (or the
@@ -103,12 +117,24 @@ curated files.
 
 | Checkpoint | When | What is reviewed |
 | --- | --- | --- |
-| **1 — Kana** | After `src/data/curated/kana.ts` | Glyph/reading pairs, alternates, mnemonics, level row grouping |
-| **2 — Vocab** | After the first conversion run | Gloss choice, reading accuracy, example-sentence naturalness, duplicates |
-| **3 — Grammar** | After `src/data/curated/grammar.ts` | Particle correctness, tokenisation, canonical order, translations |
+| **1 — Kana** | After authoring or changing kana teaching content | Glyph/reading pairs, pronunciation guidance, alternates, mnemonics, grouping, guided steps, recall coverage, and feedback |
+| **2 — Vocab** | After authoring words or changing generated output | Gloss/reading accuracy, taught-kana prerequisites, early word presentation, examples, and duplicates |
+| **3 — Grammar** | After authoring or changing grammar content | Taught words and verb forms, explanations, particle correctness, tokenisation, canonical order, and translations |
 
-Nothing ships to a level until its checkpoint is signed off. Changes after sign-off require a new
-review of the changed entries only.
+Nothing ships to a level or the pilot until its checkpoint is signed off. Changes after sign-off
+require a new review of the changed entries only. Record the reviewed entries and teaching steps,
+date, outcome, and unresolved corrections alongside the review record; a structural validator does
+not constitute content sign-off.
+
+This table is the canonical checkpoint numbering. Older session notes call grammar "Checkpoint
+2"; grammar is **Checkpoint 3** and remains open even though the level is already wired into the
+campaign. The new pilot needs kana and vocabulary review; it does not depend on completing grammar
+review or expanding the dictionaries.
+
+For the pilot, review the complete sequence from first explanation through the checkpoint and
+next-day refresher. Keep first-attempt recall prompts free of answers or hints; assess the
+four-of-five next-day target separately from review completion credit. See
+[BEGINNER-PILOT.md](BEGINNER-PILOT.md) for the learner evaluation plan.
 
 ## 6. Attribution checklist
 

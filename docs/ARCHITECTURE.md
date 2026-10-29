@@ -1,25 +1,32 @@
 # Architecture
 
-Status: **Phase 3 — campaign engines and screens built.** The progress store, question builder,
-spiral review, lesson phase, the five quiz engines, and the map → lesson → quiz → results flow are
-implemented; the free-practice Dojo and final polish are Phase 4. Sections that are still only
-target design are marked _(planned)_.
+Status: **existing Phase 3 campaign; beginner pilot planned on 2026-10-29**. The progress store,
+question builder, spiral review, lesson cards, five exercise types, mnemonic feedback, best scores,
+and map → lesson → quiz → results flow exist. Guided teaching, per-kana readiness, daily review,
+and habit tracking are planned in [BEGINNER-PILOT.md](BEGINNER-PILOT.md).
+
+The current campaign and v2 schema are described below. Section 12 describes the pilot changes;
+they must not be mistaken for implemented behavior. Free-practice Dojo and broader campaign
+expansion follow pilot evaluation. Grammar content review remains open as Checkpoint 3.
 
 ## 1. Goals and non-goals
 
 **Goals**
 
 - Take an absolute beginner from no Japanese knowledge to reading kana and building first sentences.
-- Teach before testing: every level introduces its items in a lesson, then drills them.
-- Survive forgetting: a spiral weak-item mix keeps old items in circulation.
+- Teach before testing: the pilot introduces one or two kana at a time, practices them with help,
+  then checks unaided recall and introduces a word using taught kana in the first session.
+- Evaluate recall after an actual next-day return before extending the pilot across the campaign.
+- Support regular practice with short daily review, weekly activity, and a daily streak, alongside
+  the existing spiral mix.
 - Work offline, on a phone, with no account. Progress lives in the browser.
 - Stay cheap to host and simple to maintain.
 
 **Non-goals (for this slice)**
 
 - Accounts, cloud sync, leaderboards, social features.
-- Full N5 coverage; the slice proves every mechanic with a small, curated curriculum.
-- Kanji handwriting input or SRS algorithm tuning beyond the weighted review described below.
+- Full N5 coverage or converting the entire campaign before evaluating the five-kana pilot.
+- Kanji handwriting input or a general-purpose spaced-repetition algorithm for the pilot.
 
 ## 2. Stack
 
@@ -33,9 +40,9 @@ target design are marked _(planned)_.
 | Hosting | Vercel (primary), GitHub Pages (alternative) |
 | Backend | None |
 
-No router library is required. The app has a fixed set of screens (level map, lesson, quiz, results,
-Dojo) and switches between them with state. If deep-linking becomes necessary later, add a router
-then.
+No router library is required. The app switches between the level map, lesson, quiz, results, and
+curriculum review using state. Dojo is planned. If deep-linking becomes necessary later, add a
+router then.
 
 ## 3. Directory layout
 
@@ -68,28 +75,28 @@ then.
 └── THIRD_PARTY_LICENSES.md
 ```
 
-Only `src/app`, `src/components`, `src/styles`, and `src/main.tsx` exist after Phase 1. Create the
-remaining folders as their phase lands; do not pre-create empty directories.
+Create new folders only as their implementation lands; do not pre-create empty directories.
 
-## 4. Screen flow
+## 4. Current campaign screen flow
 
 ```
 Level map
-  ├─ locked level ──────────────► nudge, no content rendered
+  ├─ locked level ──────────────► disabled stub, no lesson content
   ├─ unlocked level, unseen ────► Lesson (cards for level.learn)
-  ├─ unlocked level, seen ──────► Quiz round
-  └─ Dojo (free practice) ──────► Legacy-style config → rounds
+  └─ unlocked level, seen ──────► Quiz round
         Quiz round ──► Results
                          ├─ ≥ passAccuracy ──► mark level passed, unlock next, back to map
-                         └─ below ───────────► Retry (same items, reshuffled, spiral mixed in)
+                         └─ below ───────────► Retry (fresh selection from the eligible pools)
 ```
 
-The lesson is shown once per level. Retries never re-show it; the Dojo is always available and never
-affects level gating.
+The current campaign shows its lesson cards once per level. Retries rebuild the round from the
+eligible pools rather than preserving the exact sampled items. The future Dojo is intended to be
+always available and independent of campaign gating.
 
 ## 5. Domain model
 
-All ids are stable strings; never derive ids from array positions.
+All ids are stable strings; never derive ids from array positions. The shared definitions live in
+[`src/types/domain.ts`](../src/types/domain.ts); the main shapes are shown below.
 
 ```ts
 type Script = 'hiragana' | 'katakana';
@@ -100,14 +107,14 @@ interface KanaItem {
   type: 'kana';
   glyph: string;              // あ or ア
   romaji: string;
-  alts?: string[];            // Kunrei/alternate spellings accepted in typing
+  alts: string[];             // Kunrei/alternate spellings accepted in typing
   script: Script;
   group: KanaGroup;
   mnemonic?: string;          // shown only on miss / retry feedback
 }
 
 interface VocabItem {
-  id: string;                 // "vocab:みず"
+  id: string;                 // "vocab:水"
   type: 'vocab';
   kana: string;               // reading, e.g. みず
   kanji?: string;             // written form, e.g. 水
@@ -129,7 +136,7 @@ type GrammarQuestion =
 // assembly: `tokens` are shuffled tiles, `answer` is the canonical order.
 
 interface Level {
-  id: string;                 // "kana-01"
+  id: string;                 // "kana-h01"
   order: number;
   title: string;
   stage: 'kana' | 'vocab' | 'grammar';
@@ -137,6 +144,7 @@ interface Level {
   learn: string[];            // item ids introduced in the lesson
   pool: string[];             // item ids this level's quizzes may draw from
   grammar?: GrammarQuestion[];
+  lessonNotes?: string[];
   passAccuracy: number;       // 0.8
 }
 ```
@@ -146,15 +154,16 @@ interface Level {
 | Item type | Exercises |
 | --- | --- |
 | `kana` | `char2romaji`, `romaji2char`, `type`, `drag` (4-pair matching) |
-| `vocab` | `jp2en` (choice), `en2jp` (choice), `typeReading` (type the kana reading in rōmaji) |
+| `vocab` | `jp2en` (choice), `en2jp` (choice), reading in rōmaji (typing), word-to-meaning matching |
 | `grammar` | `particle-fill` (choice UI), `assembly` (drag/tap tile ordering) |
 
 Typing a kanji reading in rōmaji removes the IME problem and the multi-reading ambiguity: the item
-is a word, and only the word's reading is ever accepted (its `alts` if any).
+is a word, and accepted rōmaji variants are derived from its kana reading.
 
-## 6. Progress model and persistence
+## 6. Current progress model and persistence
 
-Storage key: **`kanaDojo.progress.v2`**.
+Current storage key: **`kanaDojo.progress.v2`**. Section 12 describes the planned migration for the
+pilot. This v2 shape does not yet contain unit steps, unaided recall evidence, or daily review dates.
 
 ```ts
 interface Progress {
@@ -187,15 +196,17 @@ interface Progress {
 
 ### Spiral review weighting
 
-Only items the learner has already completed a lesson for are eligible for review. A round for a
-level draws:
+The current engine treats a completed lesson (or passed level) as evidence that its items were
+taught. Kana/vocab rounds target approximately 25% review questions, weighted by
+`1 + min(wrong, 4)` and sampled without replacement from learned items outside the level pool.
 
-1. **75%** from the level's own pool (new items), shuffled and deduplicated.
-2. **25%** (rounded, at least one when eligible items exist) from review candidates outside this
-   level's new items, weighted by `1 + wrong` (capped). Items missed more often appear more often.
+With enough candidates, rounding produces three review questions in a ten-question round. Review
+items occupy choice/typing slots; the two matching questions use the current level's pool. Items
+can repeat when a pool runs short. Grammar rounds currently have no spiral review.
 
-If the review pool is too small, fill the remainder from the level pool. The mix is computed in the
-engine, not in the UI, so no screen can accidentally leak unlearned content.
+If the review pool is too small, the level pool fills the remainder. Selection belongs in the
+engine. Distractor eligibility also needs enforcement: current global fallbacks are a known gap,
+documented in the pilot plan.
 
 ### Unlocking
 
@@ -211,17 +222,24 @@ replays update `bestAccuracy`, `bestScore`, and item weights, but never re-lock 
 A single factory owns round construction:
 
 ```ts
-buildRound(levelId, progress, rng): Question[]
+buildRound(levelId: string, progress: Progress, rng?: Rng): Round
+// Round = { levelId: string; reviewCount: number; questions: Question[] }
 ```
 
-Rules:
+Current behavior:
 
 - Refuse to build if the level is locked. This is the enforcement point for "locked content never
   renders" — the UI cannot bypass it.
-- Reject item ids that are not in `progress` as learned and not in `level.learn` for first runs.
-- Rounds are 10 questions for choice/typing levels, 6 for drag rounds, and 8 for grammar levels.
+- Refuse a level whose lesson has not been completed; use its pool plus learned spiral items.
+- Kana/vocab rounds contain 10 questions: six choices, two typing, and two matching questions.
+  Grammar rounds contain eight questions: six particle fills and two assemblies. The React
+  campaign has no standalone six-question drag mode yet.
 - Every question carries the item (or grammar question) that produced it, so feedback, review, and
   miss-weight updates need no lookups.
+
+The pilot needs eligibility at each teaching step and per-item recall coverage; it cannot simply
+reuse a ten-question campaign sample as proof that every introduced kana was recalled. Restrict
+distractors to taught material and allow fewer choices when the taught pool is small.
 
 ## 8. Quiz engines
 
@@ -235,7 +253,7 @@ Five engines share the response contract `{ correct: boolean }`, plus engine-spe
 | `particle-fill` | choice chips in sentence blanks | accepts one correct particle per blank; shows the full sentence on check |
 | `assembly` | drag/tap tiles into a sentence order | reuses the drag engine; checks the canonical `answer` order, not token equality |
 
-Scoring and streaks keep the legacy feel: base 100 for choice, 120 for typing, 40 per placed drag
+Scoring and within-round answer streaks keep the legacy feel: base 100 for choice, 120 for typing, 40 per placed drag
 tile, plus a streak bonus capped at 50. Grammar questions score as choice questions. Accuracy is
 `correct / total` and is what gates progression.
 
@@ -260,7 +278,8 @@ textareas. Per-question handlers are attached in components, not delegated acros
 - **Reduced motion**: `prefers-reduced-motion` disables animations and confetti.
 - **Feedback** uses `aria-live="polite"`; focus outlines remain visible; every icon button has an
   accessible label.
-- **Touch**: tap fallbacks exist for every drag interaction; the layout is verified at < 470 px.
+- **Touch**: drag interactions include tap-fallback handlers, but ordinary taps currently trigger
+  suppression. Correct this and verify both interactions below 470 px before evaluating the pilot.
 
 ## 11. Conventions that must survive the migration
 
@@ -270,10 +289,69 @@ These were hard-won in the legacy game; do not regress them:
   compare against the item's accepted readings.
 - Choice distractors are deduplicated by visible label **and** rōmaji.
 - Dragging is Pointer Events with a cloned ghost, `touch-action: none`, a tap-to-place fallback, and
-  a `suppressClicksUntil` guard so the post-drag click does not select a tile.
+  a `suppressClicksUntil` guard set only after an actual drag so ordinary taps can select a tile.
 - User-entered text is escaped before interpolation into feedback.
 - Katakana can be generated from hiragana by the U+3041–U+3096 + 0x60 offset, but **contents of
   vocab items must be authored explicitly** — do not run the offset over mixed strings.
 - Settings and bests use versioned `localStorage` keys.
 - Prefer `performance.now()` for timers; the question timer never applies to drag or grammar
   assembly questions.
+
+## 12. Planned beginner pilot architecture
+
+The pilot introduces one or two kana per step and a kana-only word as soon as its characters have
+been taught. Its sequence is orientation → introduction → assisted practice → unaided recall →
+word reading → checkpoint. The word may appear during the teaching sequence; it need not wait for
+all five kana. Returning learners start with a short review before new material.
+
+### Unit identity and eligibility
+
+Give the five-kana unit a stable identity and its own completion record. Reuse existing kana item
+IDs, but do not shrink or silently pass `kana-h01`, which currently covers ten kana. Introducing
+one item must not make the rest of that campaign level eligible for questions or review.
+
+An early word's kana presentation must remain distinct from its later kanji teaching. For example,
+reusing the house word must not let `kanji ?? kana` display 家 in the pilot or mark `vocab-02`
+learned. Define explicit eligibility for the forms shown in prompts, options, and feedback.
+
+Keep the new teaching-step, checkpoint, and review-selection logic free of React. The UI renders
+only the active step or question. Existing exercise components can be reused after correcting
+reverse-choice prompts, tap suppression, and option eligibility.
+
+### Readiness and retained knowledge
+
+Track introduced items, assisted attempts, and unaided correct recall separately. Every new kana
+must have at least one unaided correct recall before the unit checkpoint, which passes at 80%.
+Recognition choices and answer-revealing audio do not establish unaided recall. Misses receive
+targeted explanations and later attempts without restarting the full lesson.
+
+Store next-day first attempts separately from corrections and repeated practice. A completed unit
+stays unlocked after a review miss. Daily completion depends on finishing the assigned review with
+corrections, without an accuracy gate; this is distinct from passing a new unit's checkpoint.
+
+### Daily review and calendar state
+
+Select a bounded taught-item set targeting 3–5 minutes, prioritizing weak or overdue items. Carry
+unselected items forward and allow extra practice afterward. The first next-day pilot evaluation
+checks all five kana before the refresher. Exact set size and intervals are unit-authoring details;
+the pilot does not require a general-purpose spaced-repetition scheduler.
+
+Persist completion once per local calendar day and derive daily completion, weekly activity, and
+the consecutive-day streak consistently from those records. Repeating review must not award a
+second day of credit. A missed day resets the daily streak without revoking completed units. This
+calendar streak is separate from the existing quiz answer streak and score bonuses.
+
+### Planned v3 migration
+
+Add the new state under `kanaDojo.progress.v3` when the pilot is implemented. The exact types are
+still to be defined; they must cover guided-unit progress, introduced items/forms, unaided recall
+evidence, checkpoint results, review eligibility and outcomes, and daily completion dates.
+
+Migrate v2 passes, best scores, item statistics, and practice settings/bests without re-locking
+completed levels. Old aggregate correctness counts cannot supply historical unaided recall or
+daily review dates. Retain legacy keys, validate every new field on read, and persist at meaningful
+completion transitions rather than per keystroke. These migration requirements do not change the
+current v2 key until implementation ships.
+
+Use the checks and learner evaluation targets in [BEGINNER-PILOT.md](BEGINNER-PILOT.md) before
+extending the design to additional units.
