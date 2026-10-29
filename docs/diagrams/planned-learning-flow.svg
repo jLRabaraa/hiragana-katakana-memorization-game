@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1550" viewBox="0 0 1800 1550" role="img" aria-labelledby="title description"><title id="title">planned-learning-flow</title><desc id="description">Planned learning activity flow showing Google sign-in, required once-per-kana tracing, hidden incorrect strokes, retry, completion-only local saves, quiz restart on interruption, and later cross-device synchronization.</desc>
+<rect x="0" y="0" width="1800" height="1550" rx="8" fill="#f4f7fa" stroke="#f4f7fa"/>
+<text x="50" y="58" font-family="Segoe UI,Arial,sans-serif" font-size="36" font-weight="700" fill="#243746">Kana Dōjō · Planned learning and save flow</text>
+<text x="50" y="99" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="400" fill="#526b7b">UML activity view · Required guided tracing · Completed-work persistence · Offline synchronization</text>
+<text x="50" y="131" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#526b7b">Agreed 2026-10-29 · PLANNED / NOT IMPLEMENTED · Canonical specification: docs/CLOUD-SYNC.md</text>
+<rect x="55" y="185" width="790" height="142" rx="8" fill="#eaf2fc" stroke="#bdc8d0"/>
+<text x="75" y="213" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«activity»</text>
+<text x="75" y="247" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Open app / identify account</text>
+<text x="75" y="283" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">First visit: online Google sign-in; cache app and curriculum</text>
+<text x="75" y="313" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Return offline: use remembered account and cached content</text>
+<rect x="55" y="395" width="790" height="142" rx="8" fill="#eaf2fc" stroke="#bdc8d0"/>
+<text x="75" y="423" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«activity»</text>
+<text x="75" y="457" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Lesson → quiz</text>
+<text x="75" y="493" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Use only introduced items; keep unaided recall separate</text>
+<text x="75" y="523" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Include tracing for every new kana without committed completion</text>
+<polyline points="450,327 450,395" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="444.345448056554,383.2941876694152 450,395 455.654551943446,383.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<rect x="55" y="605" width="790" height="142" rx="8" fill="#fff5e5" stroke="#bdc8d0"/>
+<text x="75" y="633" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«activity»</text>
+<text x="75" y="667" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Capture the next guided stroke invisibly</text>
+<text x="75" y="703" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Highlight next guide; do not show attempted ink</text>
+<text x="75" y="733" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">On release, check path coverage / shape / order / direction</text>
+<polyline points="450,537 450,605" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="444.345448056554,593.2941876694152 450,605 455.654551943446,593.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="470" y="575" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">tracing required</text>
+<polygon points="450,802 615,848 450,894 285,848" fill="#ffffff" stroke="#bdc8d0"/>
+<text x="331" y="855" font-family="Segoe UI,Arial,sans-serif" font-size="22" font-weight="650" fill="#243746">Stroke accepted?</text>
+<polyline points="450,747 450,802" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="444.345448056554,790.2941876694152 450,802 455.654551943446,790.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<rect x="975" y="605" width="760" height="142" rx="8" fill="#fff5e5" stroke="#bdc8d0"/>
+<text x="995" y="633" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«activity»</text>
+<text x="995" y="667" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Retry the same stroke</text>
+<text x="995" y="703" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Incorrect ink stays hidden; give accessible retry feedback</text>
+<text x="995" y="733" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">No points, reading penalty, or accepted stroke on cancellation</text>
+<polyline points="615,848 1350,848 1350,747" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="1355.654551943446,758.7058123305848 1350,747 1344.345448056554,758.7058123305848" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="925" y="832" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">[no]</text>
+<polyline points="975,675 845,675" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="856.7058123305848,669.345448056554 845,675 856.7058123305848,680.654551943446" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="884" y="660" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">retry</text>
+<rect x="55" y="965" width="790" height="142" rx="8" fill="#edf6f1" stroke="#bdc8d0"/>
+<text x="75" y="993" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«activity»</text>
+<text x="75" y="1027" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Reveal accepted stroke</text>
+<text x="75" y="1063" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Keep accepted ink; advance to the next stroke</text>
+<text x="75" y="1093" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">All strokes accepted → tracing exercise complete</text>
+<polyline points="450,894 450,965" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="444.345448056554,953.2941876694152 450,965 455.654551943446,953.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="470" y="932" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">[yes]</text>
+<polyline points="55,1035 25,1035 25,675 55,675" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="43.2941876694152,680.654551943446 55,675 43.2941876694152,669.345448056554" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="64" y="1150" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Repeat while strokes remain; after all strokes, continue the quiz.</text>
+<rect x="975" y="965" width="760" height="142" rx="8" fill="#edf6f1" stroke="#bdc8d0"/>
+<text x="995" y="993" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«activity»</text>
+<text x="995" y="1027" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Finish the round → local atomic commit</text>
+<text x="995" y="1063" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Unique round completion + tracing results + upload outbox</text>
+<text x="995" y="1093" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Save even below the reading pass gate; tracing adds no score</text>
+<polyline points="845,1035 975,1035" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="963.2941876694152,1040.654551943446 975,1035 963.2941876694152,1029.345448056554" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="854" y="1018" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">round ends</text>
+<rect x="55" y="1210" width="790" height="166" rx="8" fill="#f1f3f5" stroke="#bdc8d0"/>
+<text x="75" y="1238" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«interruption»</text>
+<text x="75" y="1272" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Close before round completion</text>
+<text x="75" y="1308" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Discard unfinished answers, position, candidate paths, and tracing</text>
+<text x="75" y="1338" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Previously completed lessons and rounds remain saved</text>
+<text x="75" y="1368" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Next attempt starts a fresh quiz</text>
+<rect x="975" y="1210" width="760" height="166" rx="8" fill="#eaf5f6" stroke="#bdc8d0"/>
+<text x="995" y="1238" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«activity»</text>
+<text x="995" y="1272" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Sync when authenticated and cloud available</text>
+<text x="995" y="1308" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Upload the same completion ID on retries; download missing events</text>
+<text x="995" y="1338" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Merge passes/tracing; keep bests; count unique rounds once</text>
+<text x="995" y="1368" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Otherwise retain local work and show pending / unavailable status</text>
+<polyline points="1350,1107 1350,1210" fill="none" stroke="#526b7b" stroke-width="2"/>
+<polyline points="1344.345448056554,1198.2941876694151 1350,1210 1355.654551943446,1198.2941876694151" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="55" y="1430" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#243746">Reading progression still requires per-kana unaided recall and an 80% checkpoint. Tracing is assisted practice, not recall.</text>
+<text x="55" y="1471" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Tracing completion becomes durable only when its round finishes. Other devices skip it after receiving the committed completion.</text>
+<text x="55" y="1512" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#526b7b">Solid arrows show activity flow. Interrupted quizzes restart. Daily-review first-attempt evidence has a separate persistence policy.</text>
+</svg>

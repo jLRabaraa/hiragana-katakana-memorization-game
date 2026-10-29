@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1490" viewBox="0 0 1800 1490" role="img" aria-labelledby="title description"><title id="title">planned-cloud-architecture</title><desc id="description">Planned UML component diagram separating browser UI, authentication, pure engine, account-scoped IndexedDB and synchronization from Firebase Authentication, Security Rules, and Firestore on Spark without billing.</desc>
+<rect x="0" y="0" width="1800" height="1490" rx="8" fill="#f4f7fa" stroke="#f4f7fa"/>
+<text x="50" y="58" font-family="Segoe UI,Arial,sans-serif" font-size="36" font-weight="700" fill="#243746">Kana Dōjō · Planned cloud architecture</text>
+<text x="50" y="99" font-family="Segoe UI,Arial,sans-serif" font-size="21" font-weight="400" fill="#526b7b">UML component view · Public Google sign-in · Offline reopen · Cross-device completion merging</text>
+<text x="50" y="131" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="600" fill="#526b7b">Agreed 2026-10-29 · PLANNED / NOT IMPLEMENTED · Canonical specification: docs/CLOUD-SYNC.md</text>
+<rect x="45" y="175" width="1100" height="1060" rx="8" fill="#fbfcfe" stroke="#9aabb8"/>
+<text x="65" y="205" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="650" fill="#243746">«execution environment» Learner’s browser</text>
+<rect x="75" y="230" width="480" height="190" rx="8" fill="#eaf2fc" stroke="#bdc8d0"/>
+<text x="95" y="258" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«component»</text>
+<text x="95" y="292" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">App shell + learning screens</text>
+<text x="95" y="328" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Sign in before first learning</text>
+<text x="95" y="358" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Home → lesson → quiz → results</text>
+<text x="95" y="388" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Restart unfinished quizzes</text>
+<rect x="645" y="230" width="470" height="190" rx="8" fill="#edf6f1" stroke="#bdc8d0"/>
+<text x="665" y="258" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«component»</text>
+<text x="665" y="292" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Authentication / session adapter</text>
+<text x="665" y="328" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Google account → stable Firebase UID</text>
+<text x="665" y="358" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Remember the signed-in account</text>
+<text x="665" y="388" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Reauthenticate online for cloud access</text>
+<polyline points="555,320 645,320" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="633.2941876694152,325.654551943446 645,320 633.2941876694152,314.345448056554" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="575" y="304" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">uses</text>
+<rect x="75" y="500" width="1040" height="190" rx="8" fill="#eaf2fc" stroke="#bdc8d0"/>
+<text x="95" y="528" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«component»</text>
+<text x="95" y="562" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">useProgress + progress coordinator</text>
+<text x="95" y="598" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Apply pure learning rules; atomically commit completions and upload outbox entries</text>
+<text x="95" y="628" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Expose local / syncing / synced / sign-in-required / cloud-unavailable status</text>
+<text x="95" y="658" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Isolate all local records, listeners, and uploads by account UID</text>
+<polyline points="310,420 310,500" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="304.345448056554,488.2941876694152 310,500 315.654551943446,488.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="330" y="464" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">completion callbacks</text>
+<polyline points="880,420 880,500" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="874.345448056554,488.2941876694152 880,500 885.654551943446,488.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="900" y="464" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">active account</text>
+<rect x="75" y="780" width="490" height="195" rx="8" fill="#fff5e5" stroke="#bdc8d0"/>
+<text x="95" y="808" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«component»</text>
+<text x="95" y="842" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Pure learning engine</text>
+<text x="95" y="878" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Eligibility + round building + recall gates</text>
+<text x="95" y="908" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Fold each completion ID once</text>
+<text x="95" y="938" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Local path / order / direction checking</text>
+<rect x="635" y="780" width="480" height="195" rx="8" fill="#edf6f1" stroke="#bdc8d0"/>
+<text x="655" y="808" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«local database»</text>
+<text x="655" y="842" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">IndexedDB repository</text>
+<text x="655" y="878" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Versioned v3 records per Firebase UID</text>
+<text x="655" y="908" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Completions + projections + upload outbox</text>
+<text x="655" y="938" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">No unfinished quiz or raw drawings</text>
+<polyline points="310,690 310,780" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="304.345448056554,768.2941876694152 310,780 315.654551943446,768.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="330" y="744" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">calls</text>
+<polyline points="875,690 875,780" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="869.345448056554,768.2941876694152 875,780 880.654551943446,768.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="895" y="744" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">atomic local save</text>
+<rect x="75" y="1050" width="490" height="155" rx="8" fill="#f1f3f5" stroke="#bdc8d0"/>
+<text x="95" y="1078" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«component»</text>
+<text x="95" y="1112" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Service worker + curriculum cache</text>
+<text x="95" y="1148" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Cache app files for offline launch</text>
+<text x="95" y="1178" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Reviewed guides and compatible updates</text>
+<rect x="635" y="1050" width="480" height="155" rx="8" fill="#eaf5f6" stroke="#bdc8d0"/>
+<text x="655" y="1078" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«component»</text>
+<text x="655" y="1112" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Synchronization adapter</text>
+<text x="655" y="1148" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Unique IDs; retries; incremental downloads</text>
+<text x="655" y="1178" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Combine completed work across devices</text>
+<polyline points="875,1050 875,975" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="880.654551943446,986.7058123305848 875,975 869.345448056554,986.7058123305848" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="895" y="1027" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">reads outbox / writes acknowledgments</text>
+<rect x="1220" y="175" width="535" height="1060" rx="8" fill="#fbfcfe" stroke="#9aabb8"/>
+<text x="1240" y="205" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="650" fill="#243746">«cloud boundary» Firebase Spark · no billing</text>
+<rect x="1250" y="230" width="475" height="190" rx="8" fill="#edf6f1" stroke="#bdc8d0"/>
+<text x="1270" y="258" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«managed service»</text>
+<text x="1270" y="292" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Firebase Authentication</text>
+<text x="1270" y="328" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Google sign-in; public registration</text>
+<text x="1270" y="358" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">First sign-in requires internet</text>
+<text x="1270" y="388" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Account UID identifies progress owner</text>
+<polyline points="1115,320 1250,320" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="1238.2941876694151,325.654551943446 1250,320 1238.2941876694151,314.345448056554" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="1145" y="302" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">sign in</text>
+<rect x="1250" y="500" width="475" height="190" rx="8" fill="#f2effa" stroke="#bdc8d0"/>
+<text x="1270" y="528" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«component»</text>
+<text x="1270" y="562" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Firestore Security Rules</text>
+<text x="1270" y="598" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Check authenticated UID ownership</text>
+<text x="1270" y="628" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Validate fields, types, sizes, operations</text>
+<text x="1270" y="658" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Deny changes to committed completions</text>
+<rect x="1250" y="780" width="475" height="195" rx="8" fill="#eaf5f6" stroke="#bdc8d0"/>
+<text x="1270" y="808" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="400" fill="#526b7b">«cloud database»</text>
+<text x="1270" y="842" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="650" fill="#243746">Firestore Standard database</text>
+<text x="1270" y="878" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">users/{uid}/completions/{completionId}</text>
+<text x="1270" y="908" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Completed lessons, rounds, tracing</text>
+<text x="1270" y="938" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Reading, review, and habit evidence</text>
+<polyline points="1485,690 1485,780" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="1479.345448056554,768.2941876694152 1485,780 1490.654551943446,768.2941876694152" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="1505" y="744" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">authorized access</text>
+<polyline points="1115,1130 1190,1130 1190,600 1250,600" fill="none" stroke="#526b7b" stroke-width="2" stroke-dasharray="8 5"/>
+<polyline points="1238.2941876694151,605.654551943446 1250,600 1238.2941876694151,594.345448056554" fill="none" stroke="#526b7b" stroke-width="2"/>
+<text x="980" y="1267" font-family="Segoe UI,Arial,sans-serif" font-size="17" font-weight="400" fill="#526b7b">Firebase client SDK</text>
+<text x="1245" y="1050" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="650" fill="#243746">Immutable completions → rebuildable progress</text>
+<text x="1245" y="1090" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#243746">Union passes and per-kana tracing completion</text>
+<text x="1245" y="1120" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#243746">Keep highest scores; tally each round once</text>
+<text x="1245" y="1150" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#243746">No full-progress last-write-wins uploads</text>
+<text x="1245" y="1180" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#243746">No deployed custom API or paid services</text>
+<text x="60" y="1307" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="600" fill="#243746">Guided tracing: required once per new kana; reveal only accepted strokes; all strokes required; no points or recall credit.</text>
+<text x="60" y="1347" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Fresh Google accounts: leave v2 / legacy saves untouched and do not import them. Commit tracing when the round finishes.</text>
+<text x="60" y="1387" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="400" fill="#243746">Offline startup requires prior online sign-in and caching. Pending uploads wait for valid authentication and available quota.</text>
+<text x="60" y="1433" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="400" fill="#526b7b">Dashed arrows denote dependencies. Secondary UI/data dependencies omitted. Current implementation remains localStorage-only.</text>
+</svg>

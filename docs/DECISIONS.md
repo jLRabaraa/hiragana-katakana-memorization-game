@@ -3,7 +3,8 @@
 This log records the current design decisions, revised in the **2026-10-29** planning interview.
 The immediate goal is independent beginner learning and next-day recall in one small pilot.
 See [BEGINNER-PILOT.md](BEGINNER-PILOT.md) for the implementation sequence and evaluation targets.
-These decisions describe the intended behavior; the pilot is not implemented yet. The October
+These decisions include the subsequent cloud/tracing interview; [CLOUD-SYNC.md](CLOUD-SYNC.md)
+is the detailed specification. All these additions are planned, not implemented. The October
 21–22 session logs preserve the earlier plan and build history.
 
 ## Product
@@ -34,7 +35,7 @@ These decisions describe the intended behavior; the pilot is not implemented yet
 | 12 | **Curated curriculum + dataset enrichment** | Author the pilot's five-kana sequence and first word intentionally. The existing campaign has 14 words and 12 grammar questions; dictionaries enrich selected content. | Bulk-converting dictionaries into the app; expanding content before evaluating the learning loop. |
 | 13 | **Engine-enforced locks and lazy rendering** | Data may sit in memory, but locked levels render as stubs and the question builder refuses to draw from unlearned stages. The lock is a logic guarantee, not a CSS trick. | Hiding locked content visually only (content leaks); lazy-loading data from day one (premature for a small slice). |
 | 14 | **Vercel as primary host** | Zero-config static deploy for Vite, preview deployments per branch, no `gh-pages` branch. GitHub Pages documented as an alternative. | GitHub Pages only (base-path friction, branch ceremony). |
-| 15 | **`localStorage` progress, no accounts** | The slice is single-user and offline-friendly. Progress is disposable if the browser is cleared; documented. | Backend + accounts (months of work irrelevant to proving the learning loop). |
+| 15 | **Public Google sign-in and account progress** | Require sign-in before first learning; allow device switching. Use Firebase Authentication and Firestore Standard on Spark without billing, plus account-scoped IndexedDB. Current code remains localStorage-only. | Account-free target, invitation-only registration, paid custom API deployment, and whole-progress last-write-wins uploads. |
 
 ## Daily practice and pilot compatibility
 
@@ -44,7 +45,22 @@ These decisions describe the intended behavior; the pilot is not implemented yet
 | 17 | **A small daily set targeting 3–5 minutes** | Prioritize weak or overdue taught items and carry the remainder forward. Extra practice and new material are optional after the set. | A default ten-minute review; requiring the entire due backlog to be cleared. |
 | 18 | **Daily completion, weekly activity, and a daily streak** | Encourage regular practice through all three views. Finishing review with corrections earns credit, even without a new lesson. | Opening the app as sufficient credit; choosing only a streak or only a weekly tracker. |
 | 19 | **Daily credit measures participation** | Credit completion once per local day without an accuracy threshold. A missed day resets the daily streak but never re-locks completed lessons. | Requiring 80% to earn daily credit; counting repeated same-day sets as extra streak days. |
-| 20 | **Separate pilot completion and migrate progress** | Five kana must not pass the existing ten-kana `kana-h01` level. Reuse stable item IDs and migrate v2 when adding guided learning and review state. | Renumbering levels, overwriting old passes, or treating old aggregate scores as evidence of unaided recall. |
+| 20 | **Separate pilot completion and fresh accounts** | Five kana must not pass ten-kana `kana-h01`. Reuse stable IDs; start v3 accounts fresh without importing browser progress or legacy settings. Leave old keys untouched; preserve account data in future migrations. | Renumbering levels, importing old saves, or treating aggregate scores as historical recall evidence. |
+
+## Cloud, offline access, and tracing
+
+| # | Decision | Rationale | Alternatives rejected |
+| --- | --- | --- | --- |
+| 21 | **Strict $0 cloud operation** | Spark with no billing account; accept unavailable cloud operations when quotas are exhausted. Keep current static frontend hosting. | Blaze, Cloud Run/Functions, or assuming free allowances guarantee unlimited service. |
+| 22 | **Offline close and reopen** | Cache app/curriculum with a service worker after initial online sign-in; retain per-account IndexedDB records and an upload outbox. Renew cloud authentication online when required. | Only supporting an already-open tab or requiring constant connectivity. |
+| 23 | **Merge completed work** | Unique immutable completion IDs make retries idempotent. Union passes/tracing, maximize bests, and count each completed round once. | Latest-device snapshot overwrites and double-counted uploads. |
+| 24 | **Restart unfinished quizzes** | Persist completed lessons/rounds; discard unfinished quiz position, answers, and uncommitted tracing. | Resuming a partial quiz locally or across devices. |
+| 25 | **Required guided tracing once per new kana** | In the quiz, require every reviewed stroke for each introduced kana without committed completion. No tracing score or reading-accuracy penalty; it is not unaided recall. Commit with round completion. | Optional tracing, repeating it every replay, freehand recognition, or uploading drawings. |
+| 26 | **Only correct strokes appear** | Capture candidate ink invisibly; on pointer release check path, order, direction, and tolerance. Reveal accepted strokes; retain them and retry rejected strokes. | Showing incorrect ink or accepting stroke count alone. |
+
+The user also wants to learn cloud engineering. Implementing storage boundaries, rules, identity,
+and synchronization supports that goal. A custom API can be a separate local learning exercise;
+strict $0 operation takes precedence over deploying a billing-required backend.
 
 The proposed content is あ・い・う・え・お and いえ (house), subject to the kana/vocabulary
 checkpoints. Initial evaluation targets include unaided first-session completion and at least
@@ -64,5 +80,8 @@ targets rather than an additional gate on daily credit or a claim of proven effe
   practice results are stored separately and do not affect campaign weights.
 - **Round length for grammar.** 8 questions is the starting assumption; measure against lesson
   length and adjust.
-- **PWA / installability.** Nice-to-have; not in the slice.
+- **Offline delivery details.** Service-worker caching and offline reopen are required. Install
+  prompts are optional; choose update/version handling and accessible tracing alternatives.
+- **Sync details.** Define settings conflicts, event retention, account calendar/time-zone policy,
+  and deterministic first-attempt review reconciliation before implementation.
 - **Localisation of the interface.** English-only for now.

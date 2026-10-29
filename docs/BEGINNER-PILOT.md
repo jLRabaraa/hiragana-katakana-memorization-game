@@ -1,6 +1,8 @@
 # Beginner pilot plan
 
-Agreed direction: **2026-10-29**. Status: **planned; not implemented or evaluated**.
+Agreed direction: **2026-10-29**, including the cloud/tracing interview. Status: **planned; not
+implemented or evaluated**. [CLOUD-SYNC.md](CLOUD-SYNC.md) defines the account, offline, sync, and
+tracing requirements; account-free plans and importing old browser saves are superseded.
 
 The next milestone is one complete beginner unit, evaluated during a first session and an actual
 next-day return. Its purpose is to find out whether someone with no Japanese knowledge can learn
@@ -37,6 +39,13 @@ lessons, restoring the free-practice Dojo, or expanding dictionary data. Those r
 5. **Check readiness:** require at least one unaided correct recall for every new kana, followed
    by a checkpoint passed at 80% accuracy.
 
+Before the first lesson, require Google sign-in (public registration). Within the quiz, require
+guided tracing once per newly taught kana without a committed tracing completion. Highlight the
+next guide and capture movement invisibly; reveal only a correct stroke after pointer release.
+Require every stroke in reviewed order/direction, allow retries, and award no tracing points.
+Exclude tracing from reading accuracy and unaided recall. Review stroke data and instructions at
+kana Checkpoint 1. Tracing coverage is required, not a random sample of new kana.
+
 Unaided recall means producing the reading without a visible answer, answer choices, or an audio
 hint that supplies it. Recognition choices and assisted answers are useful practice, but are
 recorded separately. A mistake receives a brief explanation and another recall attempt after
@@ -72,34 +81,44 @@ and short-session target. The pilot does not require a general-purpose spaced-re
 
 The current `kana-h01` level contains ten kana (あ–こ). The five-kana pilot needs its own stable
 unit identity and completion record; finishing it must not mark `kana-h01` passed or its remaining
-items learned. Reuse existing kana item IDs and preserve all existing campaign IDs and passes.
+items learned. Reuse existing kana item IDs and preserve campaign IDs. New accounts start fresh;
+preserve passes once earned within an account, including across devices.
 
 The early word must render in kana throughout the pilot. Reusing the existing house vocabulary
 entry must not expose 家 or mark its later vocabulary level completed. Represent what was actually
 taught rather than unlocking every written form of a word at once.
 
-The current store is `kanaDojo.progress.v2`. Guided-unit progress and daily review require a new
-schema and migration, planned as `kanaDojo.progress.v3`. Keep these concepts distinct:
+The current code uses `kanaDojo.progress.v2`. The target is a fresh v3 account schema in IndexedDB
+and Firestore on Spark without billing, not a v2 import or a `kanaDojo.progress.v3` localStorage
+key. Keep these concepts distinct:
 
 - Which items and forms were introduced, and which guided steps were completed.
 - Unaided recall evidence for the unit's readiness requirement and its checkpoint result.
 - Review eligibility, first-attempt outcomes, and corrections after hints.
 - Daily completion dates for weekly activity and the daily streak.
+- Per-kana tracing completions, unique completed-round IDs, and pending upload acknowledgments.
 
-Preserve existing passes, best scores, item statistics, settings, and practice bests during
-migration. Do not invent historical unaided recall or review dates from aggregate v2 counts. Read
-malformed saves safely, retain legacy keys, and save at meaningful completion transitions rather
-than on keystrokes. Keep progression and review selection in the React-free engine layer.
+Do not import v2 progress or legacy settings/bests into Google accounts; leave those keys untouched.
+Preserve new account data through future migrations. Read malformed records safely and save at
+meaningful completion transitions, not keystrokes. Keep progression, merging, and stroke checking
+in the pure engine. Completed work merges across devices without double-counting rounds.
+
+An unfinished quiz restarts. Tracing within it is uncommitted until round completion, even when
+the completed round fails the reading gate. Save completed first-attempt daily-review evidence
+separately from unfinished quiz state. Service-worker caching allows offline reopen after initial
+online sign-in; account-specific local work queues until authenticated synchronization succeeds.
 
 ## Implementation order
 
 | Step | Deliverable | Completion evidence |
 | --- | --- | --- |
-| 1. Author and review | Teaching sequence, first word, pronunciation guidance, exercises, feedback, and exact checkpoint composition | Kana and vocabulary review recorded for the changed material |
-| 2. Correct shared interactions | Reverse-choice prompt, tap behavior, taught-only option pools, accessible controls | Focused browser checks with keyboard, mouse, drag, and taps below 470 px |
-| 3. Build the guided unit | Introduction, assisted practice, unaided recall, checkpoint, targeted retries, and independent unit completion | Every taught kana is checked; assisted answers cannot satisfy the unaided gate |
-| 4. Add review and persistence | Bounded daily set, refresher, daily goal, weekly activity, streak, and v3 migration | Reload, old saves, corrupted saves, repeated same-day review, and missed-day behavior checked |
-| 5. Evaluate and revise | First session and actual next-day return with a complete beginner | Observations and first-attempt outcomes recorded before expanding the curriculum |
+| 1. Account persistence | Typed v3 completions, pure merge rules, account-scoped IndexedDB and atomic outbox | Fresh accounts; malformed data recovery; duplicate events counted once |
+| 2. Authentication and sync | Public Google sign-in, Spark Firestore, restrictive Security Rules | Cross-account denial; offline conflicts preserve completed work; no billing attached |
+| 3. Offline startup | Service worker, compatible curriculum cache, pending-save status | Close/reopen offline; expired session; quota failure; account switching; unfinished quiz restarts |
+| 4. Author and review | Teaching sequence, first word, stroke guides, feedback, checkpoint composition | Kana/vocabulary review includes tracing order, direction, licensing, and input tolerances |
+| 5. Build guided learning and tracing | Correct existing interactions; introduction, practice, unaided recall, required tracing, checkpoint | Every new kana covered; tracing adds no points or recall credit; mobile and keyboard checked |
+| 6. Daily review and habit | Bounded set, refresher, daily credit, weekly activity, streak | First attempts preserved; same-day repeats and missed days handled; calendar policy defined |
+| 7. Evaluate and revise | First session and actual next-day return with a complete beginner | Observations and first-attempt outcomes recorded before expanding the curriculum |
 
 ## Existing implementation gaps
 
@@ -126,6 +145,10 @@ These are initial pilot targets to evaluate, not evidence that the current app a
 
 - A complete beginner finishes without another person explaining the interface or lesson.
 - Every new kana receives an unaided correct recall, and the checkpoint reaches at least 80%.
+- Every newly taught kana receives required guided tracing; only correct strokes appear, all
+  strokes are required, and completion is separate from points, reading accuracy, and recall.
+- Public Google sign-in and device switching work; accounts start fresh. Offline reopen works
+  after caching, duplicate uploads preserve totals, and unfinished quizzes restart.
 - After a real next-day return, the learner recalls at least **four of five kana on first attempts
   before hints** and reads the taught word. Keep this measure separate from daily completion credit.
 - The daily review fits roughly within 3–5 minutes and offers a clear stopping point.

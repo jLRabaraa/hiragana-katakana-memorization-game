@@ -1,10 +1,12 @@
 # Deployment
 
-The app is a static Vite build (`dist/`). No server, database, or environment variables are needed.
+The **current implementation** is a static Vite build (`dist/`) requiring no database or environment
+variables. The **planned target** adds Firebase Google sign-in, Spark Firestore, offline caching,
+and account synchronization. [CLOUD-SYNC.md](CLOUD-SYNC.md) is authoritative for that target.
 
 The next milestone is the planned [beginner pilot](BEGINNER-PILOT.md). Hosting remains the same;
 guided lessons and daily review must be implemented and checked before they can be evaluated in a
-preview deployment. The existing campaign build does not yet provide those features.
+preview deployment. The existing campaign build does not yet provide those features or cloud/tracing.
 
 ## Vercel (primary)
 
@@ -30,7 +32,33 @@ vercel --prod   # production deployment
 
 - Vite's default `base: '/'` is correct for Vercel. Do not change it for Vercel deploys.
 - Static assets in `public/` are copied to `dist/` automatically.
-- No secrets or environment variables are used. Do not add `.env` files to the repo.
+- Current code uses no environment variables. Target Firebase client configuration may use public
+  `VITE_` build variables and an example config, but real `.env` files stay uncommitted. Every Vite
+  client variable is public: never place Admin SDK credentials, private keys, or secrets in it.
+
+## Planned Firebase setup and offline delivery
+
+These are implementation requirements, not completed setup:
+
+1. Create/configure a **Spark** project with **no Cloud Billing account linked**. Do not upgrade to
+   Blaze or provision Cloud Run/Functions. Configure Firebase Authentication's Google provider for
+   public registration and approve the actual frontend domains/redirect configuration.
+2. Create one Firestore **Standard edition** database eligible for the free quota. Deploy restrictive
+   Security Rules before connecting the public app. Rules must check authenticated UID ownership,
+   allowed fields/types/sizes, immutable completion IDs, and permitted operations; deny other access.
+3. Keep the static frontend on its configured host. Publish public Firebase client configuration
+   through build settings; enforce access using authentication and rules, not hidden client config.
+4. Add service-worker build integration. Cache the app shell and reviewed curriculum together;
+   scope its URL correctly for the host/base path. Serve worker files with appropriate update/cache
+   headers and keep navigation fallback from returning HTML for worker/asset requests.
+5. Verify offline readiness after an online sign-in/cache fill. Show local versus cloud save status,
+   retain the account's upload outbox on network/quota errors, and pause sync on expired sessions.
+6. Check Firebase quotas during the pilot. Public registration can exhaust free capacity; accept
+   interrupted cloud access, preserve local work, and never enable billing to repair an outage.
+
+Provider plan details can change; verify the official references in [CLOUD-SYNC.md](CLOUD-SYNC.md)
+before setup. Rules and emulator verification are required when implemented; no new test framework
+is requested. Do not mark this checklist complete based on the existing static build.
 
 ## GitHub Pages (alternative)
 
@@ -82,8 +110,23 @@ Apply these checks when the pilot is implemented, in addition to the campaign ch
 - [ ] Every new kana requires unaided correct recall before the 80% checkpoint; hints cannot
   satisfy that requirement
 - [ ] Completing the pilot does not pass the ten-kana `kana-h01` level or reveal later kanji
-- [ ] Existing v2 saves migrate without losing passes, scores, statistics, or settings; malformed
-  saves recover safely, and new progress persists after reload
+- [ ] Google accounts start fresh without importing v2/legacy progress or settings; old keys remain
+  untouched, malformed account records recover safely, and new progress persists after reload
+- [ ] Anyone can sign in with Google; users cannot read/write another UID's records; no Admin
+  credentials reach the client; invalid/oversized/mutated completion documents are rejected
+- [ ] Spark has no billing account attached; quota/network failures preserve pending work and
+  accurately distinguish local saves from synchronized progress
+- [ ] After initial online setup, close/reopen offline works; account changes isolate local data,
+  subscriptions, and uploads; expired sessions pause uploads until online reauthentication
+- [ ] Two offline devices' completed work merges without losing passes/bests or counting an event
+  twice; repeated upload acknowledgments do not duplicate round tallies or daily credit
+- [ ] Unfinished quizzes restart, including uncommitted tracing; finished rounds persist tracing
+  even below the reading pass threshold
+- [ ] Required tracing covers each newly taught kana once per account; only correct strokes become
+  visible after release; order/direction/path matter; no tracing points, accuracy effect, or recall credit
+- [ ] Stroke guides/licences and finger/mouse/stylus tolerances are reviewed; cancelled input never
+  accepts a stroke, raw paths are not uploaded, and accessible retry feedback is available
+- [ ] Service-worker updates keep curriculum/schema/code compatible and do not interrupt a quiz
 - [ ] Next-day review captures first attempts before the refresher and offers a small daily set
   after a multi-day absence
 - [ ] Completing review with corrections earns daily credit without an accuracy gate; repeat

@@ -3,7 +3,9 @@
 Status: **existing Phase 3 campaign; beginner pilot planned on 2026-10-29**. The progress store,
 question builder, spiral review, lesson cards, five exercise types, mnemonic feedback, best scores,
 and map → lesson → quiz → results flow exist. Guided teaching, per-kana readiness, daily review,
-and habit tracking are planned in [BEGINNER-PILOT.md](BEGINNER-PILOT.md).
+and habit tracking are planned in [BEGINNER-PILOT.md](BEGINNER-PILOT.md). Public Google sign-in,
+Spark Firestore sync, account-scoped IndexedDB, offline reopen, and required guided tracing are
+also planned, not built; [CLOUD-SYNC.md](CLOUD-SYNC.md) is their canonical specification.
 
 The current campaign and v2 schema are described below. Section 12 describes the pilot changes;
 they must not be mistaken for implemented behavior. Free-practice Dojo and broader campaign
@@ -19,18 +21,20 @@ expansion follow pilot evaluation. Grammar content review remains open as Checkp
 - Evaluate recall after an actual next-day return before extending the pilot across the campaign.
 - Support regular practice with short daily review, weekly activity, and a daily streak, alongside
   the existing spiral mix.
-- Work offline, on a phone, with no account. Progress lives in the browser.
-- Stay cheap to host and simple to maintain.
+- Require Google sign-in before first learning; allow public registration and device switching.
+- Reopen offline after initial online sign-in/cache setup; save locally and merge completed work.
+- Require guided tracing once per newly taught kana without tracing scores or reading penalties.
+- Keep cloud usage strictly $0: Spark without billing; accept quota-related cloud unavailability.
 
 **Non-goals (for this slice)**
 
-- Accounts, cloud sync, leaderboards, social features.
+- Leaderboards, social feeds, additional sign-in providers, and a deployed custom backend API.
 - Full N5 coverage or converting the entire campaign before evaluating the five-kana pilot.
-- Kanji handwriting input or a general-purpose spaced-repetition algorithm for the pilot.
+- Freehand recognition, isolated kanji writing exercises, or a general-purpose review scheduler.
 
 ## 2. Stack
 
-| Concern | Choice |
+| Concern | Implemented baseline |
 | --- | --- |
 | UI | React 19 + TypeScript 6 |
 | Build | Vite 8 |
@@ -39,6 +43,11 @@ expansion follow pilot evaluation. Grammar content review remains open as Checkp
 | State | React state + a typed progress store persisted to `localStorage` |
 | Hosting | Vercel (primary), GitHub Pages (alternative) |
 | Backend | None |
+
+Target additions: Firebase Authentication (Google), Firestore Standard/Spark with ownership and
+schema Security Rules, IndexedDB for per-account records/outbox, and a service worker for offline
+startup. No billing account or Cloud Run/Functions. Storage operations move out of the pure learning
+engine. See [CLOUD-SYNC.md](CLOUD-SYNC.md) and [diagrams](diagrams/README.md) for the proposed structure.
 
 No router library is required. The app switches between the level map, lesson, quiz, results, and
 curriculum review using state. Dojo is planned. If deep-linking becomes necessary later, add a
@@ -162,8 +171,9 @@ is a word, and accepted rōmaji variants are derived from its kana reading.
 
 ## 6. Current progress model and persistence
 
-Current storage key: **`kanaDojo.progress.v2`**. Section 12 describes the planned migration for the
-pilot. This v2 shape does not yet contain unit steps, unaided recall evidence, or daily review dates.
+Current storage key: **`kanaDojo.progress.v2`**. This describes the existing code, not an instruction
+to import old progress into accounts. Section 12 describes the fresh account schema. This v2 shape
+does not contain unit steps, unaided recall evidence, tracing completion, or daily review dates.
 
 ```ts
 interface Progress {
@@ -190,9 +200,10 @@ interface Progress {
 - **Save on transition, not on keystroke.** Write after a round ends and when a level is passed.
 - **Validate on read, field by field.** Unknown level ids or malformed values are dropped with
   defaults restored; a corrupted store must never break the app.
-- **Migration.** On first load, if no v2 key exists, read the legacy `kanaDojo.config.v1` and
+- **Existing v2 behavior.** On first load, if no v2 key exists, read the legacy `kanaDojo.config.v1` and
   `kanaDojo.best.v1` and seed `practice`. Never delete legacy keys automatically.
-- **Versioning.** Any change to the shape bumps the key (`.v2` → `.v3`) and ships a migration.
+- **Target versioning.** New accounts start fresh in v3 IndexedDB/Firestore records. Do not import
+  v2/legacy data or delete its keys. Future account-schema changes require versioned migrations.
 
 ### Spiral review weighting
 
@@ -281,7 +292,7 @@ textareas. Per-question handlers are attached in components, not delegated acros
 - **Touch**: drag interactions include tap-fallback handlers, but ordinary taps currently trigger
   suppression. Correct this and verify both interactions below 470 px before evaluating the pilot.
 
-## 11. Conventions that must survive the migration
+## 11. Conventions that must survive the account/offline work
 
 These were hard-won in the legacy game; do not regress them:
 
@@ -293,7 +304,8 @@ These were hard-won in the legacy game; do not regress them:
 - User-entered text is escaped before interpolation into feedback.
 - Katakana can be generated from hiragana by the U+3041–U+3096 + 0x60 offset, but **contents of
   vocab items must be authored explicitly** — do not run the offset over mixed strings.
-- Settings and bests use versioned `localStorage` keys.
+- Persist settings and bests with explicit schema versions. Current v2 uses localStorage; the
+  account target uses UID-scoped IndexedDB and Firestore records without importing those old keys.
 - Prefer `performance.now()` for timers; the question timer never applies to drag or grammar
   assembly questions.
 
@@ -341,17 +353,24 @@ the consecutive-day streak consistently from those records. Repeating review mus
 second day of credit. A missed day resets the daily streak without revoking completed units. This
 calendar streak is separate from the existing quiz answer streak and score bonuses.
 
-### Planned v3 migration
+### Planned v3 account schema
 
-Add the new state under `kanaDojo.progress.v3` when the pilot is implemented. The exact types are
-still to be defined; they must cover guided-unit progress, introduced items/forms, unaided recall
-evidence, checkpoint results, review eligibility and outcomes, and daily completion dates.
+Define v3 account-scoped IndexedDB and Firestore records; do not create a localStorage import path.
+Types must cover guided-unit progress, introduced items/forms, unaided recall, checkpoint results,
+review outcomes, daily dates, unique completion IDs, upload acknowledgments, and tracing completion.
 
-Migrate v2 passes, best scores, item statistics, and practice settings/bests without re-locking
-completed levels. Old aggregate correctness counts cannot supply historical unaided recall or
-daily review dates. Retain legacy keys, validate every new field on read, and persist at meaningful
-completion transitions rather than per keystroke. These migration requirements do not change the
-current v2 key until implementation ships.
+Google accounts start fresh; old v2/legacy saves remain untouched and are not imported. Once account
+progress exists, preserve passes and bests across devices and future schema migrations. Validate every
+field; write unique completions atomically with the local outbox. Unfinished quizzes restart and lose
+their uncommitted tracing. Tracing commits with round completion, even below the reading pass gate.
+
+Require all reviewed strokes once per introduced kana, reveal only accepted strokes after pointer
+release, and allow unlimited retries. Tracing earns no points, is excluded from reading accuracy,
+and cannot satisfy unaided recall. Engine selection must guarantee coverage of required tracing.
+
+Use service-worker caching for offline reopen and Firestore completion merging for device switching.
+Security Rules enforce UID ownership and valid shapes. Never upload candidate paths or drawings.
+Full account, retry, quota, and offline-session behavior is in [CLOUD-SYNC.md](CLOUD-SYNC.md).
 
 Use the checks and learner evaluation targets in [BEGINNER-PILOT.md](BEGINNER-PILOT.md) before
 extending the design to additional units.

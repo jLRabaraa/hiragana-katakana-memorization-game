@@ -17,6 +17,12 @@ guided steps, introduce a word using taught kana during the first session, and e
 the next day. Daily review will target 3–5 minutes, with a daily goal, weekly activity, and a streak.
 See [the agreed pilot plan](docs/BEGINNER-PILOT.md) for scope, progression, and evaluation targets.
 
+The agreed target also requires public **Google sign-in**, cross-device progress, offline close
+and reopen, and required once-per-kana guided tracing. Use **Firebase Spark without a billing
+account**: strict $0 operation, accepting cloud quota outages. Accounts start fresh; old browser
+saves are not imported. These features are **planned, not built**. See
+[the cloud/tracing plan](docs/CLOUD-SYNC.md) and [UML diagrams](docs/diagrams/README.md).
+
 The existing implementation has 16 campaign levels, lesson cards, five exercise types, spiral
 review, mnemonic feedback, saved progress and best scores, and the map → lesson → quiz → results
 flow. Guided teaching, per-kana recall requirements, daily review, and habit tracking are **not yet
@@ -70,15 +76,18 @@ The full mechanics, schemas, and engine design are in
 | Milestone | Scope |
 | --- | --- |
 | **Existing foundation** | React + TypeScript + Vite, curated data and conversion script, 16-level campaign, five exercise types, local progress |
-| **Next — Beginner pilot** | Review the unit content; correct supporting exercises; build guided teaching, recall gate, daily review, and persistence migration; evaluate with a complete beginner |
+| **Next — Account and offline foundation** | Public Google sign-in, fresh v3 account records, IndexedDB/outbox, Spark Firestore rules/sync, service-worker caching; no billing |
+| **Beginner pilot** | Review content and stroke guides; correct exercises; build guided teaching, required tracing, recall gate, and daily review; evaluate with a complete beginner |
 | **After evaluation** | Improve the pilot, then extend the approach across more kana and words |
 | **Later campaign work** | Grammar teaching and content review, free-practice Dojo, broader mobile verification, deployment readiness |
 
 The pilot replaces the immediate priority of completing the old Phase 4 list. Its proposed content
 is あ・い・う・え・お and いえ (house), subject to content review. Completion requires an unaided
-correct recall for every new kana, followed by an 80% checkpoint. A separate pilot record will
-preserve existing campaign progress; completing five kana must not pass the current ten-kana
-first level. Kanji stays a later step taught through words.
+correct recall for every new kana, followed by an 80% checkpoint. A separate pilot record keeps
+pilot completion distinct from campaign passes; completing five kana must not pass the ten-kana
+first level. New Google accounts start fresh; existing v2 saves are left untouched and not imported.
+Tracing requires all strokes, reveals only accepted strokes, and has no points or reading-accuracy
+effect. Unfinished quizzes restart. Kanji stays a later step taught through words.
 
 ## Content and licensing
 
@@ -95,6 +104,8 @@ The game's own source code currently has no license (all rights reserved) unless
 | --- | --- |
 | [`docs/BEGINNER-PILOT.md`](docs/BEGINNER-PILOT.md) | Agreed next milestone, daily review, implementation order, and learner evaluation |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Stack, data model, engines, progress and locking design |
+| [`docs/CLOUD-SYNC.md`](docs/CLOUD-SYNC.md) | Agreed sign-in, strict $0 cloud, offline sync, fresh accounts, and tracing contracts |
+| [`docs/diagrams/README.md`](docs/diagrams/README.md) | Implemented and planned UML image diagrams |
 | [`docs/DATA-PIPELINE.md`](docs/DATA-PIPELINE.md) | Curriculum authoring, dataset conversion, licences |
 | [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Vercel and GitHub Pages deployment |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Decision log from the design interview |
